@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { AppProvider } from "./appContext";
+import Main from "./sections/Main";
+import Sidebar from "./sections/Sidebar";
 
-function App() {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    page: {
+      width: "100vw",
+      height: "100vh",
+      overflow: "hidden",
+      background: theme.palette.common.white,
+      display: "flex",
+    },
+  })
+);
+
+const App = () => {
+  const classes = useStyles();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppProvider>
+      <div className={classes.page}>
+        <Main />
+        <Sidebar />
+      </div>
+    </AppProvider>
   );
-}
+};
 
 export default App;
