@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
-import { AppProvider } from "./appContext";
-import Main from "./sections/Main";
-import Sidebar from "./sections/Sidebar";
+import useContext, { AppProvider, Page } from "./appContext";
+import Home from "./pages/home";
+import EditEquation from "./pages/editEquation";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,11 +20,21 @@ const App = () => {
   return (
     <AppProvider>
       <div className={classes.page}>
-        <Main />
-        <Sidebar />
+        <Router />
       </div>
     </AppProvider>
   );
 };
 
 export default App;
+
+const pages: Record<Page, () => JSX.Element> = {
+  [Page.HOME]: Home,
+  [Page.QUERY_EDIT]: EditEquation,
+};
+
+const Router = () => {
+  const { page } = useContext();
+  const CurrentPage = pages[page] || Home;
+  return <CurrentPage />;
+};

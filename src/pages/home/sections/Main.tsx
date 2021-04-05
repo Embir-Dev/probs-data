@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import Header from "./Header";
-import Results from "../components/Results";
+import Results from "../../../components/Results";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

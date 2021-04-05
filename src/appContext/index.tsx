@@ -1,19 +1,35 @@
 import { useContext, createContext, useState } from "react";
 import parse from "../grammar/parse";
 import { useDebouncedCallback } from "use-debounce";
+import {
+  checkExistEquationByName,
+  getEquationByName,
+  saveEquation,
+  buildEquation,
+  Equation,
+} from "../utils/equation";
 
-type Result = {
+export type Result = {
+  dice: number;
   equation: string;
   data: any[];
   timestamp: number;
+  name?: string;
 };
 
+export enum Page {
+  HOME = "HOME",
+  QUERY_EDIT = "QUERY_EDIT",
+}
+
 const useContextState = () => {
+  const [page, setPage] = useState(Page.HOME);
   const [dice, setDice] = useState(DEFAULT_CONTEXT_STATE.dice);
   const [results, setResults] = useState<Result[]>(
     DEFAULT_CONTEXT_STATE.results
   );
   const [equation, setEquation] = useState(DEFAULT_CONTEXT_STATE.equation);
+  const [name, setName] = useState<string>("");
   const [equationError, setEquationError] = useState<string | undefined>(
     DEFAULT_CONTEXT_STATE.equationError
   );
@@ -33,6 +49,11 @@ const useContextState = () => {
   const handleSetEquation = (newEquation: string) => {
     setEquation(newEquation);
     validateEquation(newEquation);
+    setName("");
+  };
+
+  const handleSetName = (newName: string) => {
+    setName(newName);
   };
 
   const roll = () => {
@@ -43,9 +64,11 @@ const useContextState = () => {
       }
       setResults([
         {
-          equation: `${dice} * ${equation}`,
+          dice,
+          equation,
           data,
           timestamp: new Date().getTime(),
+          name,
         },
         ...results,
       ]);
@@ -54,14 +77,47 @@ const useContextState = () => {
     }
   };
 
+  const handleUseEquation = (savedEquation: Equation) => {
+    setEquation(savedEquation.definition);
+    setName(savedEquation.name);
+  };
+
+  const upsertEquation = async () => {
+    if (!name) return "Name must be defined";
+    if (await checkExistEquationByName(name)) {
+      console.log("updating", name);
+      const existingEquation = await getEquationByName(name);
+      await saveEquation({
+        ...existingEquation,
+        definition: equation,
+        name,
+      });
+    } else {
+      console.log("creating", name);
+      await saveEquation(
+        buildEquation({
+          name,
+          definition: equation,
+        }),
+        true
+      );
+    }
+  };
+
   return {
     results,
+    name,
     dice,
     equation,
     equationError,
+    page,
+    setPage,
     handleSetDice,
     handleSetEquation,
+    handleSetName,
     roll,
+    upsertEquation,
+    handleUseEquation,
   };
 };
 

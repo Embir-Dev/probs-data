@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
-import RollCount from "../components/RollCount";
-import EquationField from "../components/EquationField";
-import useContext from "../appContext";
+import RollCount from "../../../components/RollCount";
+import EquationField from "../../../components/EquationField";
+import useContext from "../../../appContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

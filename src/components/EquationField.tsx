@@ -1,10 +1,4 @@
-import {
-  TextField,
-  makeStyles,
-  createStyles,
-  Theme,
-  Paper,
-} from "@material-ui/core";
+import { TextField, makeStyles, createStyles, Theme } from "@material-ui/core";
 import { ChangeEvent } from "react";
 import useContext from "../appContext";
 
@@ -35,14 +29,6 @@ const EquationField = () => {
       value={equation}
       variant="outlined"
       error={Boolean(equationError)}
-      helperText={
-        <Paper>
-          {equationError?.split("\n").map((str, i) => {
-            if (i > 2) return null;
-            return <p key={i}>{str}</p>;
-          })}
-        </Paper>
-      }
       InputProps={{
         className: classes.input,
       }}
